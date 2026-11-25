@@ -11,6 +11,10 @@
       "data_collection_permissions": { "required": ["none"] }
     }
   },
+  "icons": {
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  },
   "permissions": ["storage"],
   "content_scripts": [
     {
