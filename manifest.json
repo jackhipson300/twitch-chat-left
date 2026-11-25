@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "Twitch Chat Left",
+  "version": "1.0.0",
+  "description": "Moves Twitch chat to the left side of the page and the left navigation panel to the right.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "twitch-chat-left@local",
+      "strict_min_version": "109.0"
+    }
+  },
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.twitch.tv/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

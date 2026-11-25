@@ -1,0 +1,43 @@
+/* Elements tagged by content.js. `order` reorders items inside their flex row
+   without moving DOM nodes, so Twitch's React tree is left untouched.
+   Everything is gated on html.tcl-on so the toggle button can switch it off. */
+html.tcl-on [data-tcl="first"] {
+  order: -9999 !important;
+}
+
+html.tcl-on [data-tcl="last"] {
+  order: 9999 !important;
+}
+
+/* The collapse/expand arrows point the wrong way once the columns swap sides. */
+html.tcl-on [data-a-target="side-nav-arrow"] svg,
+html.tcl-on [data-a-target="right-column__toggle-collapse-btn"] svg {
+  transform: scaleX(-1);
+}
+
+/* Toggle button in the chat header, styled like Twitch's own icon buttons. */
+#tcl-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  margin: 0 2px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-fill-button-icon, currentColor);
+  cursor: pointer;
+}
+
+#tcl-toggle:hover {
+  background: var(--color-background-button-text-hover, rgba(83, 83, 95, 0.48));
+  color: var(--color-fill-button-icon-hover, currentColor);
+}
+
+#tcl-toggle:focus-visible {
+  outline: 2px solid var(--color-border-input-focus, #a970ff);
+  outline-offset: 1px;
+}
