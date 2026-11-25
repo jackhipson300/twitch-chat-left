@@ -1,0 +1,11 @@
+{
+  "name": "twitch-chat-left",
+  "private": true,
+  "scripts": {
+    "dev": "web-ext run --source-dir extension --start-url https://www.twitch.tv --firefox-profile twitch-chat-left-dev --profile-create-if-missing --keep-profile-changes",
+    "lint": "web-ext lint --source-dir extension --self-hosted"
+  },
+  "devDependencies": {
+    "web-ext": "10.8.0"
+  }
+}

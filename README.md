@@ -3,6 +3,50 @@
 A Firefox add-on that swaps Twitch's layout: chat goes on the **left**, the
 followed-channels side panel goes on the **right**.
 
+A ⇄ button in the chat header (next to the collapse arrow) switches between the
+swapped layout and Twitch's normal one. The choice is remembered.
+
+## Install
+
+1. Open the [latest release](https://github.com/jackhipson300/twitch-chat-left/releases/latest).
+2. Click the `.xpi` file and let Firefox install it.
+
+That's the only manual install. Firefox checks for updates and installs new
+releases automatically (or immediately via `about:addons` → gear icon →
+*Check for Updates*).
+
+## Releasing
+
+Push to the default branch. That's it.
+
+The [Release workflow](.github/workflows/release.yml) then:
+
+1. stamps the version as `<major>.<minor>.<run number>` (major/minor come from
+   `extension/manifest.json`; bump those by hand only for a big change),
+2. lints the extension,
+3. has Mozilla sign it as an unlisted add-on (usually a few minutes),
+4. publishes a GitHub release with the signed `.xpi` and an `updates.json`.
+
+The manifest's `update_url` points at the latest release's `updates.json`, which
+is how installed copies find new versions. That URL is fetched anonymously, so
+the repo must stay public.
+
+Signing uses the repo secrets `AMO_JWT_ISSUER` and `AMO_JWT_SECRET` (API keys
+from https://addons.mozilla.org/developers/addon/api/key/). Mozilla refuses a
+version it has already signed, so re-running a run whose signing step succeeded
+will fail; use *Run workflow* or push again instead.
+
+## Development
+
+```sh
+npm install
+npm run dev    # opens Firefox with the add-on loaded; reloads on every file change
+npm run lint
+```
+
+`npm run dev` uses a dedicated Firefox profile (`twitch-chat-left-dev`) that keeps
+your Twitch login and settings between runs.
+
 ## How it works
 
 - **Side panel:** `content.js` walks up from the side nav to the horizontal flex
@@ -14,35 +58,13 @@ followed-channels side panel goes on the **right**.
   shifts the chat box (with the CSS `translate` property) so it lines up with
   the left edge of the main content.
 
-Nothing in the page is removed or rebuilt, so Twitch keeps working normally.
-
-A ⇄ button in the chat header (next to the collapse arrow) switches between the
-swapped layout and Twitch's normal one. The choice is remembered. A `MutationObserver` re-applies the change as you
-move between pages, since Twitch never does a full page reload.
-
-## Install (temporary, for testing)
-
-1. Open `about:debugging#/runtime/this-firefox` in Firefox.
-2. Click **Load Temporary Add-on…** and select `manifest.json` in this folder.
-3. Open or reload a Twitch channel.
-
-A temporary add-on is removed when Firefox closes.
-
-## Install (permanent)
-
-Release Firefox only installs signed add-ons. Either:
-
-- **Sign it for yourself (free):** zip the files (`manifest.json`, `content.js`,
-  `styles.css`) and upload them to https://addons.mozilla.org/developers/ as
-  **"On your own"** (unlisted). Mozilla signs it automatically and you get an
-  `.xpi` to install. Or use `npx web-ext sign` with your AMO API keys.
-- **Use Firefox Developer Edition or Nightly:** set
-  `xpinstall.signatures.required` to `false` in `about:config`, then install the
-  zipped `.xpi` from `about:addons` → gear icon → *Install Add-on From File*.
+Nothing in the page is removed or rebuilt, so Twitch keeps working normally. A
+`MutationObserver` re-applies the change as you move between pages, since Twitch
+never does a full page reload.
 
 ## If something looks wrong
 
-Run `diagnose.js` in the console on the broken page (F12 → Console, paste,
-Enter). It copies a description of the layout to your clipboard, which is enough
-to fix the selectors. You can also set `DEBUG = true` at the top of `content.js`
-to log what the add-on is doing.
+Run [`diagnose.js`](diagnose.js) in the console on the broken page (F12 →
+Console, paste, Enter). It copies a description of the layout to your clipboard,
+which is enough to fix the selectors. You can also set `DEBUG = true` at the top
+of `extension/content.js` to log what the add-on is doing.
